@@ -10,27 +10,26 @@ from ..utils.constants import (
 
 class Database:
     def __init__(self):
-        self._connection = sqlite3.connect(DATABASE_LOCATION)
-
-        # Creation of cache table
-        self._connection.execute(
+        self.connection.execute(
             "CREATE TABLE IF NOT EXISTS cache (ip TEXT PRIMARY KEY, details TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
 
     @property
     def connection(self):
-        return self._connection
-
-    @connection.setter
-    def connection(self, value):
-        self._connection = sqlite3.connect(value)
+        return sqlite3.connect(DATABASE_LOCATION)
 
     def get_row_by_ip(self, ip: str):
-        return self._connection.execute(
-            "SELECT * FROM cache WHERE ip = ?", (ip,)
-        ).fetchone()
+        result = self.connection.execute(
+            "SELECT * FROM cache WHERE ip = ?", (ip,)).fetchone()
+        return result
+
+    def get_all_ips(self) -> list:
+        cursor = self.connection.execute("SELECT * FROM cache")
+        return cursor.fetchall()
 
     def save_ipinfo_location(self, ip: str, details: str):
-        self._connection.execute(
-            "INSERT INTO cache (ip, value) VALUES (?, ?)", (ip, details)
+        conn = self.connection
+        conn.execute(
+            "INSERT INTO cache (ip, details) VALUES (?, ?)", (ip, details)
         )
-
+        conn.commit()
+        conn.close()

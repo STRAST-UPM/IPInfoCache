@@ -15,7 +15,7 @@ class IPLocationProvider:
 
     def get_ip_location(self, ip: str) -> dict:
         row = self._db.get_row_by_ip(ip)
-        if row:
+        if row is not None:
             item = IPInfoLocation(row)
             if item.created_at < datetime.now() - timedelta(days=30):
                 return self.update_ip_location(ip).to_dict()
@@ -25,13 +25,13 @@ class IPLocationProvider:
             return self.update_ip_location(ip).to_dict()
 
     def update_ip_location(self, ip: str) -> IPInfoLocation:
-        location_info = self.request_to_ipinfo(ip)
+        # location_info = self.request_to_ipinfo(ip)
+        location_info = "location_info"
         self._db.save_ipinfo_location(
             ip, location_info
         )
-        item = IPInfoLocation(
-            self._db.get_row_by_ip(ip)
-        )
+        ip_row_data = self._db.get_row_by_ip(ip)
+        item = IPInfoLocation(ip_row_data)
         return item
 
     def request_to_ipinfo(self, ip: str) -> str:
