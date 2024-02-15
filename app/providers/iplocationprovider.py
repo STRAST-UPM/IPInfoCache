@@ -2,9 +2,14 @@
 from datetime import datetime, timedelta
 import ipinfo
 import json
+import dotenv
+from os import getenv
 # internal imports
 from ..base.database import Database
 from ..models.ipinfo_locations import IPInfoLocation
+from ..utils.constants import (
+    ENV_PATH
+)
 
 
 class IPLocationProvider:
@@ -25,8 +30,7 @@ class IPLocationProvider:
             return self.update_ip_location(ip).to_dict()
 
     def update_ip_location(self, ip: str) -> IPInfoLocation:
-        # location_info = self.request_to_ipinfo(ip)
-        location_info = "location_info"
+        location_info = self.request_to_ipinfo(ip)
         self._db.save_ipinfo_location(
             ip, location_info
         )
@@ -35,7 +39,8 @@ class IPLocationProvider:
         return item
 
     def request_to_ipinfo(self, ip: str) -> str:
-        access_token = "token"
+        dotenv.load_dotenv(ENV_PATH)
+        access_token = getenv("IPINFO_TOKEN")
         handler = ipinfo.getHandler(access_token)
         return json.dumps(handler.getDetails(ip).all)
 
