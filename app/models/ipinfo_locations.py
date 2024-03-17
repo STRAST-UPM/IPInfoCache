@@ -13,28 +13,17 @@ class IPInfoLocation:
     def ip(self):
         return self._ip
 
-    @ip.setter
-    def ip(self, value):
-        self._ip = value
-
     @property
     def details(self):
         return self._details
-
-    @details.setter
-    def details(self, value):
-        self._details = value
 
     @property
     def created_at(self):
         return self._created_at
 
-    @created_at.setter
-    def created_at(self, value):
-        self._created_at = value
-
     def to_dict(self) -> dict:
         return {
             "ip": self._ip,
-            "details": self._details
+            "details": self._details,
+            "created_at": str(self._created_at)
         }
