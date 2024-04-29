@@ -33,3 +33,11 @@ class Database:
         )
         conn.commit()
         conn.close()
+
+    def delete_ipinfo_location(self, ip: str):
+        conn = self.connection
+        conn.execute(
+            "DELETE FROM cache WHERE ip = ?", (ip,)
+        )
+        conn.commit()
+        conn.close()

@@ -27,9 +27,14 @@ class IPLocationProvider:
             else:
                 return item.to_dict()
         else:
-            return self.update_ip_location(ip).to_dict()
+            return self.insert_ip_location(ip).to_dict()
 
     def update_ip_location(self, ip: str) -> IPInfoLocation:
+        self.remove_ip_location(ip)
+        item = self.insert_ip_location(ip)
+        return item
+
+    def insert_ip_location(self, ip: str) -> IPInfoLocation:
         location_info = self.request_to_ipinfo(ip)
         self._db.save_ipinfo_location(
             ip, location_info
@@ -37,6 +42,9 @@ class IPLocationProvider:
         ip_row_data = self._db.get_row_by_ip(ip)
         item = IPInfoLocation(ip_row_data)
         return item
+
+    def remove_ip_location(self, ip: str):
+        self._db.delete_ipinfo_location(ip)
 
     def request_to_ipinfo(self, ip: str) -> str:
         dotenv.load_dotenv(ENV_PATH)
