@@ -5,7 +5,7 @@ FROM python:3.10-slim-bookworm
 WORKDIR /
 
 # Copy the application code to the working directory
-COPY . /app/.
+COPY ./app /app/.
 
 # Install the dependencies
 RUN pip install -r app/requirements.txt
